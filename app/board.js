@@ -14,6 +14,7 @@ Board.prototype._makeBoard = function(n) {
   return res;
 };
 
+
 Board.prototype.get = function(row, col) {
   if(row > this.size - 1 || col > this.size - 1 || row < 0 || col < 0 ) {
     return 0;
@@ -28,7 +29,7 @@ Board.prototype.set = function(row, col, val) {
   return this.matrix[row][col] = val;
 };
 
-Board.prototype.step = function() {
+Board.prototype.step = function(verbose) {
   // Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.
   // Any live cell with two or three live neighbors lives on to the next generation.
   // Any live cell with more than three live neighbors dies, as if by overpopulation.
@@ -41,15 +42,10 @@ Board.prototype.step = function() {
       const neighbors = this.get(i, j+1) + this.get(i, j-1) +
                        this.get(i+1, j) + this.get(i+1, j+1) + this.get(i+1, j-1) + 
                        this.get(i-1, j) + this.get(i-1, j+1) + this.get(i-1, j-1);
-      if(i === 2 && j === 1) {
-        // console.log('@2,1:', neighbors);
-        // console.log('thisone', this.get(i-1, j));
-        // console.log('andthis', this.get(i+1, j))
-      }
+
       //cell is live
       if(this.get(i,j)) {
         if(neighbors < 2 || neighbors > 3) {
-          console.log('Delete', i, j);
           nextState[i][j] = 0;
         } else {
           nextState[i][j] = 1;
@@ -63,16 +59,19 @@ Board.prototype.step = function() {
       }
     }
   }
+  if(verbose) {
+    console.log(nextState);
+  }
   this.matrix = nextState;
 };
 
-const b = new Board(5);
-b.set(1,1,1);
-b.set(2,1,1);
-b.set(3,1,1);
-console.log(b.matrix);
-b.step();
-console.log(b.matrix);
-b.step();
-console.log(b.matrix);
-// export default Board;
+// // Small test
+// const b = new Board(5);
+// b.set(1,1,1);
+// b.set(2,1,1);
+// b.set(3,1,1);
+// b.step(true);
+// b.step(true);
+
+
+export default Board;
